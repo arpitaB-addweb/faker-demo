@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Search.css";
-
 const Image_data = () => {
     const [data, setData] = useState([]);
+    const [dummydata, setDummyData] = useState([]);
     const [enterData, setEnterdata] = useState("");
 
     console.log(data, "data")
+   
     useEffect(() => {
         loadUsers();
     }, []);
@@ -14,52 +15,52 @@ const Image_data = () => {
     const loadUsers = async () => {
 
         const result = await axios.get("http://localhost:3005/data");
-        console.log(result.data.reverse());
-        setData(result.data.reverse());
+        console.log(result.data,"reverse");
+        setData(result.data);
+        setDummyData(result.data)
     };
 
 
     const handleChange = (e) => {
-        const searchWord = e.target.value;
+        console.log(dummydata,"hjbjhbhjbh");
+        let searchWord = e.target.value;
         setEnterdata(searchWord);
-        console.log(searchWord, "search")
-        const newData = data.filter(value => {
+        const newData = dummydata.filter(value => {
+            console.log('aaaa>>>>>>')
             return value.title.toLowerCase().includes(searchWord.toLowerCase());
         });
         console.log(newData, "newdata")
 
         if (searchWord === "" || searchWord === " ") {
             setData([]);
-        } else {
+            window.location.reload(true)
+         }
+        else {
             setData(newData);
         }
     };
-
     return (
-        <div>
+        <div className="main">
             <div className="Input">
                 <label>Search:
-                    <input placeholder="Enter Title" type="text" value={enterData} onChange={handleChange} />
+                    <input className="input-tag" placeholder="Enter Title" type="text" onChange={handleChange} />
                 </label>
-
             </div>
             <hr />
             {data.length !== 0 && (
-            <div className="data-list">
-                {data.map((user) => (
-                    <>
-                        <div className="col-3">
-                            <img src={user.image} className='card-img-top' />
-                            <div className='card-body text-dark'>
-                                <h4 className='card-title'>Title: {user.title}</h4>
-                                <div className="cls">
+                <div className="data-list">
+                    {data.map((user) => (
+                        <>
+                            <div className="col-3">
+                                <img src={user.image} alt={user.id + "Not found"} className='card-img-top' />
+                                <div className='card-body'>
+                                    <h4 className='card-title'>Title: {user.title}</h4>
                                     <p className='desc'>Description: {user.description}</p>
                                 </div>
                             </div>
-                        </div>
-                    </>
-                ))}
-            </div>
+                        </>
+                    ))}
+                </div>
             )}
         </div>
     );
